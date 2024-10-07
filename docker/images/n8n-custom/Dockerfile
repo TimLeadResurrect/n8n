@@ -32,13 +32,25 @@ COPY --from=builder /compiled /usr/local/lib/node_modules/n8n
 COPY docker/images/n8n/docker-entrypoint.sh /
 
 RUN \
-	cd /usr/local/lib/node_modules/n8n && \
-	npm rebuild sqlite3 && \
-	cd - && \
-	ln -s /usr/local/lib/node_modules/n8n/bin/n8n /usr/local/bin/n8n && \
-	mkdir .n8n && \
-	chown node:node .n8n
+    cd /usr/local/lib/node_modules/n8n && \
+    npm rebuild sqlite3 && \
+    cd - && \
+    ln -s /usr/local/lib/node_modules/n8n/bin/n8n /usr/local/bin/n8n && \
+    mkdir .n8n && \
+    chown node:node .n8n
 
+# **Added Step: Install Additional Packages**
+RUN \
+    cd /usr/local/lib/node_modules/n8n && \
+    npm install axios@^1.4.0 \
+                youtube-captions-scraper@^1.0.4 \
+                youtube-transcript-fetcher@^1.0.0 \
+                lodash@^4.17.21 \
+                date-fns@^2.30.0 \
+                nodemailer@^6.9.3 \
+                cheerio@^1.0.0-rc.12 \
+                dotenv@^16.3.1 \
+                openai@^4.10.0
 ENV SHELL /bin/sh
 USER node
 ENTRYPOINT ["tini", "--", "/docker-entrypoint.sh"]
